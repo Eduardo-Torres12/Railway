@@ -3,7 +3,11 @@ FROM php:8.1-apache
 # Instalar extensión mysqli
 RUN docker-php-ext-install mysqli
 
-# Copiar archivos del proyecto al contenedor
+# Deshabilitar otros MPM y habilitar solo prefork
+RUN a2dismod mpm_event mpm_worker || true \
+    && a2enmod mpm_prefork
+
+# Copiar archivos del proyecto
 COPY . /var/www/html/
 
 # Configurar Apache para usar el puerto dinámico de Railway
@@ -13,5 +17,5 @@ RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf \
 # Exponer el puerto dinámico
 EXPOSE ${PORT}
 
-# Comando de inicio de Apache
+# Comando de inicio
 CMD ["apache2-foreground"]
