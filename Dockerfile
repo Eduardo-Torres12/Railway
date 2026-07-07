@@ -1,14 +1,9 @@
 FROM php:8.2-apache
 
-# Instalar mysqli
 RUN docker-php-ext-install mysqli
 
-# Habilitar mod_rewrite
-RUN a2enmod rewrite
+RUN rm -rf /var/www/html/*
 
-# Copiar archivos
-COPY . /var/www/html
-
-EXPOSE 80
+RUN echo "<?php phpinfo(); ?>" > /var/www/html/index.php
 
 CMD ["apache2-foreground"]
